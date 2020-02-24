@@ -25,4 +25,17 @@ public class Methods {
         return choice;
 
     }
+
+    private boolean selection() {
+
+        char c = sc.next().charAt(0);
+        if (c == 'Y' || c == 'y') {
+            return true;
+        } else if (c == 'N' || c == 'n') {
+            return false;
+        } else {
+            return false;
+        }
+    }
+
 }
