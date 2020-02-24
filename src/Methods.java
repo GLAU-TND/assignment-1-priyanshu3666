@@ -38,4 +38,35 @@ public class Methods {
         }
     }
 
+    private Person addContact() {
+        String choice = null;
+        String phone[] = new String[10];
+        int i = 0;
+        String email = null;
+        String first = null;
+        String last = null;
+
+        System.out.println("First Name : ");
+        first = sc.next();
+        System.out.println("Last Name : ");
+        last = sc.next();
+
+        do {
+            System.out.print("Phone number : ");
+            phone[i] = sc.next();
+            System.out.print("Would you like to add another contact number? (y/n)");
+            i++;
+        }
+        while (selection());
+
+        System.out.print("Would you like to add email address? (y/n)");
+        if (selection())
+            email = sc.next();
+
+        p = new Person(first, last, phone, email);
+
+        return p;
+    }
+
+
 }
