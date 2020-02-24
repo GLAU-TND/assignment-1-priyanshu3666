@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Methods {
@@ -21,7 +22,12 @@ public class Methods {
                 "Press 3 to search for a contact\n" +
                 "Press 4 to delete a contact\n" +
                 "Press 5 to exit program ");
-        choice = sc.nextInt();
+        try {
+            choice = sc.nextInt();
+        } catch (InputMismatchException E) {
+            System.out.println("Invalid Choice");
+            System.exit(-1);
+        }
         return choice;
 
     }
@@ -37,6 +43,7 @@ public class Methods {
             return false;
         }
     }
+
 
     private Person addContact() {
         String choice = null;
@@ -68,34 +75,23 @@ public class Methods {
         return p;
     }
 
+
     public void insert() {
         int f = 0;
         Person p = addContact();
-        char priority = p.first.charAt(0);
-        Person temp = front;
-        if (front == null) {
+
+        if (front == null || p.priority < front.priority) {
+            p.next = front;
             front = p;
-            rear = p;
-            temp = p;
+        } else {
+            Person temp = front;
+
+            while (temp.next != null && temp.next.priority <= p.priority) {
+                temp = temp.next;
+            }
+            p.next = temp.next;
+            temp.next = p;
         }
-
-        while (temp.next != null) {
-
-            if (priority > temp.first.charAt(0) && priority < temp.next.first.charAt(0)) {
-
-                p = temp.next;
-                temp.next = p;
-                temp = p;
-                return;
-            } else
-                f = 1;
-            temp = temp.next;
-        }
-        if (f == 1) {
-            rear.next = p;
-            rear = p;
-        }
-
     }
 
 
@@ -117,88 +113,93 @@ public class Methods {
             i = 0;
             if (ctr == 1) {
                 System.out.println("Contact Number:" + temp.phone[0]);
-            } else
+                break;
+            } else {
                 System.out.print("Contact Number(s):");
-            while (temp.phone[i] != null) {
-                System.out.print(temp.phone[i] + ", ");
-                i++;
-            }
-            System.out.println("\b");
-            System.out.println("Email address:" + temp.email);
-        }
-    }
-
-    public void search() {
-        Person temp = front;
-        int ctr = 0;
-        System.out.println("You could search for a contact from their first names: ");
-        String s = sc.next();
-        while (temp != null) {
-            if (temp.first.equals(s))
-                ctr++;
-
-        }
-        if (ctr == 0) {
-            System.out.println("NO RESULTS FOUND!");
-        } else {
-            System.out.println(ctr + " match found!");
-            while (temp != null) {
-                int i = 0;
-                System.out.println("First Name: " + temp.first + "/\n"
-                        + "Last Name:" + temp.last + "\n");
-                while (temp.phone[i] != null) {
-                    ctr++;
-                    i++;
-                }
-                i = 0;
-                if (ctr == 1) {
-                    System.out.println("Contact Number:" + temp.phone[0]);
-                } else
-                    System.out.print("Contact Number(s):");
                 while (temp.phone[i] != null) {
                     System.out.print(temp.phone[i] + ", ");
                     i++;
                 }
                 System.out.println("\b");
-                System.out.println("Email address:" + temp.email);
 
             }
+            System.out.println("Email address:" + temp.email);
+            temp = temp.next;
         }
     }
 
+    public void search() {
+        System.out.println("write the first name to search contact");
+        String search = sc.next();
+        Person temp = front;
+        int ctr = 0;
+        while (temp != null) {
+            if (temp.first.equals(search)) {
+                ctr++;
+            }
+            temp = temp.next;
+        }
+        temp = front;
+        System.out.println(ctr + "matches found!");
+        while (temp != null) {
+            if (temp.first.equals(search)) {
+                System.out.println("First Name: " + temp.first);
+                System.out.println("last Name: " + temp.last);
+                if (temp.phone[1] != null) {
+                    System.out.print("Contact Number(s): ");
+                } else {
+                    System.out.print("Contact Number: ");
+                }
+                for (String i : temp.phone) {
+                    if (i != null)
+                        System.out.println(i + ",");
+                }
+                System.out.println("\b");
+                System.out.println("Email Address" + temp.email);
+            } else
+                temp = temp.next;
+            break;
+
+        }
+    }
 
     public void delete() {
-        int i = 1;
+        int i = 0;
         Person temp = front;
         while (temp != null) {
-            System.out.println(i + ". " + temp.first + " " + temp.last);
             i++;
+            System.out.println(i + ". " + temp.first + " " + temp.last);
+            temp = temp.next;
         }
         System.out.println("Press the number against contact to delete");
         int pos = sc.nextInt();
-        i = 0;
-        while (temp != null) {
-            if (i != pos - 1) {
-                temp = temp.next;
-                i++;
-            } else {
-                System.out.println(temp.next.first + " " + temp.next.last + "Contact have been deleted");
+        temp = front;
+        if (pos == 1) {
+            System.out.println("Deleteing Contact" + front.first + " front.last");
+            front = temp.next;
+            temp = front;
+            return;
+        }
+        if (pos == 2) {
+            System.out.println("Deleting Contact" + temp.first + " " + temp.last);
+            temp.next = temp.next.next;
+            return;
+        }
+        for (i = 1; i <= pos - 2; i++) {
+            temp = temp.next;
+            if (i == pos - 2) {
+                System.out.println("Deleting Contact" + temp.first + " " + temp.last);
                 temp.next = temp.next.next;
+                return;
             }
         }
     }
 
 
     public void exit() {
-
         System.out.println("Exitting .......");
         System.exit(0);
     }
 
 
 }
-
-
-
-
-
